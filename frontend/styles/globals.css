@@ -1,0 +1,25 @@
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: #f8fafc;
+  color: #111827;
+}
+main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px;
+}
+button {
+  padding: 8px 14px;
+  border: 1px solid #d1d5db;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+input, select {
+  padding: 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  width: 100%;
+  max-width: 320px;
+}

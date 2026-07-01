@@ -24,8 +24,13 @@ export default function Login(){
           <input placeholder="Email" value={email} onChange={e=>setEmail(e.target.value)} />
           <input placeholder="Password" type="password" value={password} onChange={e=>setPassword(e.target.value)} />
           <button type="submit">Login</button>
-          <div className="auth-actions">
-            <Link href="/auth" className="btn btn-secondary">Register or switch options</Link>
+          <p style={{ margin: '12px 0 8px', color: '#516c58' }}>New here? Create an account:</p>
+          <div className="auth-actions" style={{ gap: 10, flexWrap: 'wrap' }}>
+            <Link href="/register" className="btn btn-primary">Register as buyer</Link>
+            <Link href="/register?role=FARMER" className="btn btn-primary">Register as seller</Link>
+          </div>
+          <div className="auth-actions" style={{ marginTop: 16 }}>
+            <Link href="/auth" className="btn btn-secondary">See all auth options</Link>
           </div>
         </form>
       </section>

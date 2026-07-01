@@ -34,7 +34,11 @@ export default function MyProducts() {
     <main style={{ padding: 20 }}>
       <h2>My Products</h2>
       <p>{error}</p>
-      <p><Link href="/login">Login</Link></p>
+      <div style={{ display: 'grid', gap: 10, maxWidth: 320 }}>
+        <Link href="/auth" className="btn btn-primary">Login or Register</Link>
+        <Link href="/register" className="btn btn-secondary">Register as buyer</Link>
+        <Link href="/register?role=FARMER" className="btn btn-secondary">Register as seller</Link>
+      </div>
     </main>
   )
 

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import Link from 'next/link';
 
 function getCart() {
@@ -11,22 +12,26 @@ function saveCart(cart) {
 }
 
 export default function Products() {
+  const router = useRouter();
   const [list, setList] = useState([]);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('ALL');
 
-  const fetchProducts = () => {
+  const fetchProducts = (selectedCategory = category, searchText = search) => {
     const query = new URLSearchParams();
-    if (search) query.set('search', search);
-    if (category && category !== 'ALL') query.set('category', category);
+    if (searchText) query.set('search', searchText);
+    if (selectedCategory && selectedCategory !== 'ALL') query.set('category', selectedCategory);
     fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/api/products?' + query.toString())
       .then(r => r.json())
       .then(setList);
   };
 
   useEffect(() => {
-    fetchProducts();
-  }, []);
+    if (!router.isReady) return;
+    const categoryFromQuery = router.query.category ? String(router.query.category).toUpperCase() : 'ALL';
+    setCategory(categoryFromQuery);
+    fetchProducts(categoryFromQuery, search);
+  }, [router.isReady, router.query.category]);
 
   const addToCart = (product) => {
     const cart = getCart();

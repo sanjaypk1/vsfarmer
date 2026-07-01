@@ -11,8 +11,8 @@ export default function AuthSelect() {
         </div>
         <div className="auth-form" style={{ display: 'grid', gap: 16 }}>
           <Link href="/login" className="btn btn-primary">Login</Link>
-          <Link href="/register" className="btn btn-secondary">Register as buyer</Link>
-          <Link href="/register?role=FARMER" className="btn btn-secondary">Register as seller</Link>
+          <Link href="/register" className="btn btn-primary">Register as buyer</Link>
+          <Link href="/register?role=FARMER" className="btn btn-primary">Register as seller</Link>
         </div>
       </section>
     </main>

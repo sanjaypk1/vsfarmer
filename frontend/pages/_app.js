@@ -13,6 +13,7 @@ export default function App({ Component, pageProps }) {
           <Link href="/cart">Cart</Link>
           <Link href="/dashboard">Dashboard</Link>
           <Link href="/my-products">My Products</Link>
+          <Link href="/auth">Login / Register</Link>
           <Link href="/admin">Admin</Link>
           <Link href="/logout">Logout</Link>
         </nav>

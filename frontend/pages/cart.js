@@ -33,26 +33,46 @@ export default function Cart() {
 
   return (
     <main>
-      <h2>Cart</h2>
-      {items.length === 0 ? (
-        <p>Your cart is empty. <Link href="/products">Shop produce</Link>.</p>
-      ) : (
-        <>
-          <ul>
-            {items.map(item => (
-              <li key={item.productId} style={{ marginBottom: 12 }}>
-                <strong>{item.name}</strong> — ₹{(item.unitPrice / 100).toFixed(2)} ×{' '}
-                <input type="number" min="1" value={item.quantity} onChange={e => updateQty(item.productId, Number(e.target.value))} style={{ width: 80 }} />
-                <button type="button" onClick={() => remove(item.productId)} style={{ marginLeft: 10 }}>Remove</button>
-              </li>
-            ))}
-          </ul>
-          <div style={{ marginTop: 20 }}>
-            <p><strong>Total:</strong> ₹{(total / 100).toFixed(2)}</p>
-            <Link href="/checkout"><button>Proceed to checkout</button></Link>
+      <section className="page-card">
+        <div className="page-header">
+          <div>
+            <p className="eyebrow">Basket</p>
+            <h2>Cart</h2>
           </div>
-        </>
-      )}
+          <Link href="/products" className="text-link">Continue shopping</Link>
+        </div>
+
+        {items.length === 0 ? (
+          <div className="empty-state">
+            <p>Your cart is empty.</p>
+            <Link href="/products" className="btn btn-primary">Shop produce</Link>
+          </div>
+        ) : (
+          <div className="cart-layout">
+            <div className="card-stack">
+              {items.map(item => (
+                <div className="display-card cart-item" key={item.productId}>
+                  <div>
+                    <h3>{item.name}</h3>
+                    <p>₹{(item.unitPrice / 100).toFixed(2)} each</p>
+                  </div>
+                  <div className="cart-actions">
+                    <input type="number" min="1" value={item.quantity} onChange={e => updateQty(item.productId, Number(e.target.value))} />
+                    <button type="button" onClick={() => remove(item.productId)}>Remove</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <aside className="summary-card">
+              <h3>Order summary</h3>
+              <div className="summary-row"><span>Subtotal</span><strong>₹{(total / 100).toFixed(2)}</strong></div>
+              <div className="summary-row"><span>Delivery</span><strong>Free</strong></div>
+              <div className="summary-row total"><span>Total</span><strong>₹{(total / 100).toFixed(2)}</strong></div>
+              <Link href="/checkout" className="btn btn-primary wide">Proceed to checkout</Link>
+            </aside>
+          </div>
+        )}
+      </section>
     </main>
   );
 }

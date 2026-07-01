@@ -37,30 +37,39 @@ export default function Products() {
 
   return (
     <main>
-      <h2>Products</h2>
-      <p><Link href="/cart">View Cart</Link></p>
-      <div style={{ marginBottom: 16 }}>
-        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search produce" style={{ width: 280 }} />
-        <button type="button" onClick={fetchProducts} style={{ marginLeft: 8 }}>Search</button>
-      </div>
-      <ul style={{ listStyle: 'none', padding: 0 }}>
-        {list.map((p) => (
-          <li key={p.id} style={{ marginBottom: 14, padding: 14, border: '1px solid #e5e7eb', borderRadius: 10 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16 }}>
-              <div>
-                <strong>{p.name}</strong>
-                <p style={{ margin: 4 }}>{p.description}</p>
-                <p style={{ margin: 4 }}>Farm: {p.farmer.name}</p>
-                <p style={{ margin: 4 }}>Price: ₹{(p.priceCents / 100).toFixed(2)} per {p.unit}</p>
-                <p style={{ margin: 4 }}>Stock: {p.quantity}</p>
+      <section className="page-card">
+        <div className="page-header">
+          <div>
+            <p className="eyebrow">Marketplace</p>
+            <h2>Products</h2>
+          </div>
+          <Link href="/cart" className="text-link">View cart</Link>
+        </div>
+
+        <div className="search-row">
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search produce" />
+          <button type="button" onClick={fetchProducts}>Search</button>
+        </div>
+
+        <div className="card-grid">
+          {list.map((p) => (
+            <article className="display-card" key={p.id}>
+              <div className="card-top">
+                <span className="pill">{p.unit}</span>
+                <span className="pill muted">In stock</span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <button type="button" onClick={() => addToCart(p)}>Add to cart</button>
+              <h3>{p.name}</h3>
+              <p>{p.description}</p>
+              <div className="meta-list">
+                <span>Farm: {p.farmer?.name || 'Local grower'}</span>
+                <span>₹{(p.priceCents / 100).toFixed(2)} / {p.unit}</span>
+                <span>{p.quantity} available</span>
               </div>
-            </div>
-          </li>
-        ))}
-      </ul>
+              <button type="button" onClick={() => addToCart(p)}>Add to cart</button>
+            </article>
+          ))}
+        </div>
+      </section>
     </main>
   );
 }

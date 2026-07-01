@@ -12,13 +12,19 @@ export default function Login(){
     else alert(j.error || 'Login failed');
   }
   return (
-    <main style={{ padding: 20 }}>
-      <h2>Login</h2>
-      <form onSubmit={handle}>
-        <div><input placeholder="email" value={email} onChange={e=>setEmail(e.target.value)} /></div>
-        <div><input placeholder="password" type="password" value={password} onChange={e=>setPassword(e.target.value)} /></div>
-        <button>Login</button>
-      </form>
+    <main>
+      <section className="auth-card">
+        <div>
+          <p className="eyebrow">Welcome back</p>
+          <h2>Login</h2>
+          <p>Access your dashboard, orders and saved farming essentials.</p>
+        </div>
+        <form onSubmit={handle} className="auth-form">
+          <input placeholder="Email" value={email} onChange={e=>setEmail(e.target.value)} />
+          <input placeholder="Password" type="password" value={password} onChange={e=>setPassword(e.target.value)} />
+          <button type="submit">Login</button>
+        </form>
+      </section>
     </main>
   )
 }

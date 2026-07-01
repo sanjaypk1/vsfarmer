@@ -6,16 +6,6 @@ function getCart() {
   return JSON.parse(localStorage.getItem('farmers-market-cart') || '[]');
 }
 
-function parseToken(token) {
-  if (!token) return null;
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return payload;
-  } catch {
-    return null;
-  }
-}
-
 export default function Checkout() {
   const [cart, setCart] = useState([]);
   const [status, setStatus] = useState('');
@@ -57,34 +47,50 @@ export default function Checkout() {
 
   return (
     <main>
-      <h2>Checkout</h2>
-      {cart.length === 0 ? (
-        <p>Your cart is empty. Add items from <a href="/products">products</a>.</p>
-      ) : (
-        <>
-          <ul>
-            {cart.map(item => (
-              <li key={item.productId}>{item.name} × {item.quantity} — ₹{(item.unitPrice * item.quantity / 100).toFixed(2)}</li>
-            ))}
-          </ul>
-              <p><strong>Total:</strong> ₹{(total / 100).toFixed(2)}</p>
-          <div style={{ marginBottom: 12 }}>
-            <label>
-              <input type="radio" name="delivery" value="PICKUP" checked={deliveryType === 'PICKUP'} onChange={() => setDeliveryType('PICKUP')} /> Pickup
-            </label>
-            <label style={{ marginLeft: 16 }}>
-              <input type="radio" name="delivery" value="DELIVERY" checked={deliveryType === 'DELIVERY'} onChange={() => setDeliveryType('DELIVERY')} /> Delivery
-            </label>
+      <section className="page-card">
+        <div className="page-header">
+          <div>
+            <p className="eyebrow">Checkout</p>
+            <h2>Confirm your order</h2>
           </div>
-          {deliveryType === 'DELIVERY' && (
-            <div style={{ marginBottom: 12 }}>
-              <textarea placeholder="Delivery address" value={deliveryAddress} onChange={e => setDeliveryAddress(e.target.value)} rows={3} style={{ width: '100%', maxWidth: 420 }} />
+        </div>
+
+        {cart.length === 0 ? (
+          <div className="empty-state">
+            <p>Your cart is empty. Add items from the products page.</p>
+            <a href="/products" className="btn btn-primary">Browse products</a>
+          </div>
+        ) : (
+          <div className="checkout-layout">
+            <div className="card-stack">
+              {cart.map(item => (
+                <div className="display-card" key={item.productId}>
+                  <h3>{item.name}</h3>
+                  <p>Quantity: {item.quantity}</p>
+                  <p>₹{(item.unitPrice * item.quantity / 100).toFixed(2)}</p>
+                </div>
+              ))}
             </div>
-          )}
-          <button type="button" onClick={placeOrder}>Place order</button>
-          {status && <p>{status}</p>}
-        </>
-      )}
+            <div className="summary-card">
+              <h3>Delivery options</h3>
+              <label className="radio-row">
+                <input type="radio" name="delivery" value="PICKUP" checked={deliveryType === 'PICKUP'} onChange={() => setDeliveryType('PICKUP')} />
+                <span>Pickup</span>
+              </label>
+              <label className="radio-row">
+                <input type="radio" name="delivery" value="DELIVERY" checked={deliveryType === 'DELIVERY'} onChange={() => setDeliveryType('DELIVERY')} />
+                <span>Delivery</span>
+              </label>
+              {deliveryType === 'DELIVERY' && (
+                <textarea placeholder="Delivery address" value={deliveryAddress} onChange={e => setDeliveryAddress(e.target.value)} rows={3} />
+              )}
+              <div className="summary-row total"><span>Total</span><strong>₹{(total / 100).toFixed(2)}</strong></div>
+              <button type="button" onClick={placeOrder}>Place order</button>
+              {status && <p className="status-text">{status}</p>}
+            </div>
+          </div>
+        )}
+      </section>
     </main>
   );
 }

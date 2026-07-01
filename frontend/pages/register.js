@@ -20,24 +20,30 @@ export default function Register(){
     else alert(j.error || 'Register failed');
   }
   return (
-    <main style={{ padding: 20 }}>
-      <h2>Register</h2>
-      <form onSubmit={handle}>
-        <div><input placeholder="email" value={email} onChange={e=>setEmail(e.target.value)} /></div>
-        <div><input placeholder="password" type="password" value={password} onChange={e=>setPassword(e.target.value)} /></div>
-        <div style={{ marginTop: 10 }}>
-          <label><input type="radio" name="role" value="CUSTOMER" onChange={e=>setRole(e.target.value)} defaultChecked /> Customer</label>
-          <label style={{ marginLeft: 10 }}><input type="radio" name="role" value="FARMER" onChange={e=>setRole(e.target.value)} /> Farmer</label>
+    <main>
+      <section className="auth-card">
+        <div>
+          <p className="eyebrow">Join the network</p>
+          <h2>Create account</h2>
+          <p>Sign up as a buyer or list your farm products with ease.</p>
         </div>
-        {role === 'FARMER' && (
-          <div style={{ marginTop: 10 }}>
-            <div><input placeholder="Farm name" value={name} onChange={e=>setName(e.target.value)} /></div>
-            <div><input placeholder="Location" value={location} onChange={e=>setLocation(e.target.value)} /></div>
-            <div><textarea placeholder="Short farm bio" value={bio} onChange={e=>setBio(e.target.value)} rows={3} /></div>
+        <form onSubmit={handle} className="auth-form">
+          <input placeholder="Email" value={email} onChange={e=>setEmail(e.target.value)} />
+          <input placeholder="Password" type="password" value={password} onChange={e=>setPassword(e.target.value)} />
+          <div className="radio-group">
+            <label><input type="radio" name="role" value="CUSTOMER" onChange={e=>setRole(e.target.value)} defaultChecked /> Customer</label>
+            <label><input type="radio" name="role" value="FARMER" onChange={e=>setRole(e.target.value)} /> Farmer</label>
           </div>
-        )}
-        <button style={{ marginTop: 16 }}>Register</button>
-      </form>
+          {role === 'FARMER' && (
+            <>
+              <input placeholder="Farm name" value={name} onChange={e=>setName(e.target.value)} />
+              <input placeholder="Location" value={location} onChange={e=>setLocation(e.target.value)} />
+              <textarea placeholder="Short farm bio" value={bio} onChange={e=>setBio(e.target.value)} rows={3} />
+            </>
+          )}
+          <button type="submit">Register</button>
+        </form>
+      </section>
     </main>
   )
 }

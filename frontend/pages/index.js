@@ -24,6 +24,7 @@ export default function Home() {
           <div className="hero-actions">
             <Link href="/products" className="btn btn-primary">Shop now</Link>
             <Link href="/farmers" className="btn btn-secondary">Meet farmers</Link>
+            <Link href="/auth" className="btn btn-secondary">Login / Register</Link>
           </div>
         </div>
         <div className="hero-panel">
@@ -49,10 +50,10 @@ export default function Home() {
         </div>
         <div className="category-grid">
           {categories.map((item) => (
-            <div className="category-card" key={item.name}>
+            <Link href={`/products?category=${item.name.toUpperCase()}`} key={item.name} className="category-card">
               <span className="category-icon">{item.icon}</span>
               <h3>{item.name}</h3>
-            </div>
+            </Link>
           ))}
         </div>
       </section>

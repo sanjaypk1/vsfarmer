@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Link from 'next/link'
 import Router from 'next/router'
 
 export default function Login(){
@@ -23,6 +24,9 @@ export default function Login(){
           <input placeholder="Email" value={email} onChange={e=>setEmail(e.target.value)} />
           <input placeholder="Password" type="password" value={password} onChange={e=>setPassword(e.target.value)} />
           <button type="submit">Login</button>
+          <div className="auth-actions">
+            <Link href="/auth" className="btn btn-secondary">Register or switch options</Link>
+          </div>
         </form>
       </section>
     </main>

@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 import Router from 'next/router'
 
 export default function Register(){
+  const router = useRouter()
   const [email,setEmail]=useState('')
   const [password,setPassword]=useState('')
   const [role,setRole]=useState('CUSTOMER')
@@ -26,6 +28,15 @@ export default function Register(){
     if (j.token) { localStorage.setItem('token', j.token); Router.push('/products'); }
     else alert(j.error || 'Register failed');
   }
+
+  useEffect(() => {
+    if (!router.isReady) return;
+    const queryRole = router.query.role
+    if (queryRole) {
+      setRole(queryRole === 'FARMER' ? 'FARMER' : 'CUSTOMER')
+    }
+  }, [router.isReady, router.query.role])
+
   return (
     <main>
       <section className="auth-card">
@@ -38,8 +49,8 @@ export default function Register(){
           <input placeholder="Email" value={email} onChange={e=>setEmail(e.target.value)} />
           <input placeholder="Password" type="password" value={password} onChange={e=>setPassword(e.target.value)} />
           <div className="radio-group">
-            <label><input type="radio" name="role" value="CUSTOMER" onChange={e=>setRole(e.target.value)} defaultChecked /> Customer</label>
-            <label><input type="radio" name="role" value="FARMER" onChange={e=>setRole(e.target.value)} /> Farmer</label>
+            <label><input type="radio" name="role" value="CUSTOMER" onChange={e=>setRole(e.target.value)} checked={role === 'CUSTOMER'} /> Customer</label>
+            <label><input type="radio" name="role" value="FARMER" onChange={e=>setRole(e.target.value)} checked={role === 'FARMER'} /> Farmer</label>
           </div>
           {role === 'FARMER' && (
             <>

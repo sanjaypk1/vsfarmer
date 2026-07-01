@@ -70,7 +70,7 @@ export default function Dashboard() {
   if (!user) return (
     <main>
       <h2>Dashboard</h2>
-      <p>Please <Link href="/login">login</Link> to access your dashboard.</p>
+      <p>Please <Link href="/auth">login or register</Link> to access your dashboard.</p>
     </main>
   )
 

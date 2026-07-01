@@ -1,7 +1,10 @@
 import Link from 'next/link'
 
 const categories = [
+  { name: 'Vegetables', icon: '🥕' },
+  { name: 'Fruits', icon: '🍓' },
   { name: 'Seeds', icon: '🌱' },
+  { name: 'Saplings', icon: '🌿' },
   { name: 'Pesticides', icon: '🛡️' },
   { name: 'Fertilizers', icon: '🌾' },
   { name: 'Tools', icon: '🧰' },

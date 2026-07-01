@@ -13,6 +13,7 @@ export default function AddProduct() {
   const [quantity, setQuantity] = useState('')
   const [unit, setUnit] = useState('kg')
   const [category, setCategory] = useState('SEEDS')
+  const [imageUrls, setImageUrls] = useState('')
 
   const submit = async (e) => {
     e.preventDefault()
@@ -22,7 +23,8 @@ export default function AddProduct() {
       Router.push('/auth?mode=login')
       return
     }
-    const payload = { name, description, priceCents: Number(priceCents), quantity: Number(quantity), unit, category }
+    const images = imageUrls.split(',').map(url => url.trim()).filter(Boolean)
+    const payload = { name, description, priceCents: Number(priceCents), quantity: Number(quantity), unit, category, images }
     const res = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/api/products', {
       method: 'POST',
       headers: { 'content-type': 'application/json', Authorization: `Bearer ${token}` },
@@ -46,6 +48,7 @@ export default function AddProduct() {
         <input placeholder="Price in cents" type="number" value={priceCents} onChange={e=>setPriceCents(e.target.value)} required />
         <input placeholder="Quantity available" type="number" value={quantity} onChange={e=>setQuantity(e.target.value)} required />
         <input placeholder="Unit (kg, lb, dozen)" value={unit} onChange={e=>setUnit(e.target.value)} required />
+        <textarea placeholder="Image URLs (comma separated)" value={imageUrls} onChange={e=>setImageUrls(e.target.value)} rows={2} />
         <select value={category} onChange={e=>setCategory(e.target.value)}>
           <option value="SEEDS">Seeds</option>
           <option value="SAPLINGS">Saplings</option>

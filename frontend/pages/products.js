@@ -98,6 +98,11 @@ export default function Products() {
                   <span className="pill">{p.category || 'OTHER'}</span>
                   <span className="pill muted">In stock</span>
                 </div>
+                {p.images && p.images.length > 0 && (
+                  <div className="product-media">
+                    <img src={p.images[0]} alt={p.name} className="product-image" />
+                  </div>
+                )}
                 <h3>{p.name}</h3>
                 <p>{p.description}</p>
                 <div className="meta-list">

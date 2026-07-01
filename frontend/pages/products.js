@@ -42,7 +42,6 @@ export default function Products() {
       ? cart.map(item => item.productId === product.id ? { ...item, quantity: item.quantity + 1 } : item)
       : [...cart, { productId: product.id, name: product.name, unitPrice: product.priceCents, quantity: 1 }];
     saveCart(next);
-    alert('Added to cart');
   };
 
   return (
@@ -61,6 +60,9 @@ export default function Products() {
           <select value={category} onChange={e => setCategory(e.target.value)}>
             <option value="ALL">All categories</option>
             <option value="SEEDS">Seeds</option>
+            <option value="SAPLINGS">Saplings</option>
+            <option value="VEGETABLES">Vegetables</option>
+            <option value="FRUITS">Fruits</option>
             <option value="PESTICIDES">Pesticides</option>
             <option value="FERTILIZERS">Fertilizers</option>
             <option value="TOOLS">Tools</option>

@@ -14,7 +14,7 @@ export default function AddProduct() {
     const token = localStorage.getItem('token')
     if (!token) {
       alert('Login to add products')
-      Router.push('/login')
+      Router.push('/auth?mode=login')
       return
     }
     const payload = { name, description, priceCents: Number(priceCents), quantity: Number(quantity), unit, category }
@@ -40,6 +40,9 @@ export default function AddProduct() {
         <input placeholder="Unit (kg, lb, dozen)" value={unit} onChange={e=>setUnit(e.target.value)} required />
         <select value={category} onChange={e=>setCategory(e.target.value)}>
           <option value="SEEDS">Seeds</option>
+          <option value="SAPLINGS">Saplings</option>
+          <option value="VEGETABLES">Vegetables</option>
+          <option value="FRUITS">Fruits</option>
           <option value="PESTICIDES">Pesticides</option>
           <option value="FERTILIZERS">Fertilizers</option>
           <option value="TOOLS">Tools</option>

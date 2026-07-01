@@ -45,7 +45,7 @@ export default function Admin() {
     setOrders(prev => prev.map(order => order.id === data.id ? data : order))
   }
 
-  if (error) return <main><h2>Admin panel</h2><p>{error}</p><p><Link href="/login">Login</Link></p></main>
+  if (error) return <main><h2>Admin panel</h2><p>{error}</p><p><Link href="/auth?mode=login">Login</Link></p></main>
 
   return (
     <main>

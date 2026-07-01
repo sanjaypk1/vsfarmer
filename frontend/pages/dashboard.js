@@ -73,8 +73,8 @@ export default function Dashboard() {
       <p>Please login or register to access your dashboard.</p>
       <div style={{ display: 'grid', gap: 10, maxWidth: 320 }}>
         <Link href="/auth" className="btn btn-primary">Login or Register</Link>
-        <Link href="/register" className="btn btn-secondary">Register as buyer</Link>
-        <Link href="/register?role=FARMER" className="btn btn-secondary">Register as seller</Link>
+        <Link href="/auth?mode=register" className="btn btn-secondary">Register as buyer</Link>
+        <Link href="/auth?mode=register&role=FARMER" className="btn btn-secondary">Register as seller</Link>
       </div>
     </main>
   )

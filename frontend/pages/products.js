@@ -8,7 +8,9 @@ function getCart() {
 }
 
 function saveCart(cart) {
+  if (typeof window === 'undefined') return;
   localStorage.setItem('farmers-market-cart', JSON.stringify(cart));
+  window.dispatchEvent(new Event('cartUpdated'))
 }
 
 export default function Products() {

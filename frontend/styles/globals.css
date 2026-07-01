@@ -86,14 +86,62 @@ header a {
   border: 1px solid transparent;
 }
 
-.btn-primary {
+.btn-primary, .btn-secondary {
   background: #1e6f3f;
   color: #fff;
+  border-color: transparent;
 }
 
 .btn-secondary {
-  border-color: rgba(255,255,255,0.35);
+  opacity: 0.98;
+}
+
+.btn-secondary:hover,
+.btn-primary:hover {
+  opacity: 0.95;
+}
+
+.cart-fab {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: #1e6f3f;
   color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  box-shadow: 0 20px 40px rgba(30, 111, 63, 0.24);
+  z-index: 1000;
+}
+
+.cart-fab:hover {
+  transform: translateY(-2px);
+}
+
+.cart-fab-icon {
+  font-size: 1.5rem;
+}
+
+.cart-fab-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  min-width: 20px;
+  min-height: 20px;
+  line-height: 20px;
+  border-radius: 999px;
+  background: #fde047;
+  color: #1e6f3f;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .hero-panel {

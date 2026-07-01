@@ -7,7 +7,14 @@ function loadCart() {
 }
 
 function saveCart(items) {
+  if (typeof window === 'undefined') return;
   localStorage.setItem('farmers-market-cart', JSON.stringify(items));
+  window.dispatchEvent(new Event('cartUpdated'))
+}
+
+function showNotification(message, type = 'success') {
+  if (typeof window === 'undefined') return;
+  window.dispatchEvent(new CustomEvent('appNotification', { detail: { message, type } }))
 }
 
 export default function Cart() {
@@ -18,15 +25,17 @@ export default function Cart() {
   }, []);
 
   const updateQty = (id, qty) => {
-    const next = items.map(item => item.productId === id ? { ...item, quantity: qty } : item).filter(item => item.quantity > 0);
+    const next = items.map(item => item.productId === id ? { ...item, quantity: Math.max(1, qty) } : item).filter(item => item.quantity > 0);
     setItems(next);
     saveCart(next);
+    showNotification('Cart updated', 'info');
   };
 
   const remove = id => {
     const next = items.filter(item => item.productId !== id);
     setItems(next);
     saveCart(next);
+    showNotification('Item removed from cart', 'info');
   };
 
   const total = items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);

@@ -590,6 +590,74 @@ header a {
   color: #1e6f3f;
 }
 
+.notification-bar {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 420px;
+  width: calc(100% - 32px);
+  padding: 16px 18px;
+  border-radius: 16px;
+  box-shadow: 0 22px 60px rgba(15, 23, 42, 0.14);
+  color: #fff;
+  font-weight: 600;
+}
+
+.notification-bar.success {
+  background: #1e6f3f;
+}
+
+.notification-bar.error {
+  background: #c34141;
+}
+
+.notification-bar.info {
+  background: #2563eb;
+}
+
+.notification-close {
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.notification-message {
+  margin: 0;
+}
+
+.cart-actions input,
+.quantity-row input {
+  width: 68px;
+  padding: 8px 10px;
+  border: 1px solid #e5eee2;
+  border-radius: 12px;
+  background: #f8faf6;
+  color: #11251b;
+}
+
+.quantity-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.cart-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
 button {
   padding: 10px 14px;
   border: 1px solid #cfe1cf;

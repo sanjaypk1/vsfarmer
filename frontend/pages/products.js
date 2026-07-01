@@ -13,11 +13,17 @@ function saveCart(cart) {
   window.dispatchEvent(new Event('cartUpdated'))
 }
 
+function showNotification(message, type = 'success') {
+  if (typeof window === 'undefined') return;
+  window.dispatchEvent(new CustomEvent('appNotification', { detail: { message, type } }))
+}
+
 export default function Products() {
   const router = useRouter();
   const [list, setList] = useState([]);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('ALL');
+  const [quantities, setQuantities] = useState({});
 
   const fetchProducts = (selectedCategory = category, searchText = search) => {
     const query = new URLSearchParams();
@@ -35,13 +41,25 @@ export default function Products() {
     fetchProducts(categoryFromQuery, search);
   }, [router.isReady, router.query.category]);
 
+  const setQuantity = (id, value, max = 1) => {
+    const quantity = Math.max(1, Math.min(max, Number(value) || 1));
+    setQuantities(prev => ({ ...prev, [id]: quantity }));
+  };
+
   const addToCart = (product) => {
+    const requested = quantities[product.id] || 1;
+    if (requested > product.quantity) {
+      showNotification(`Only ${product.quantity} ${product.unit} available`, 'error');
+      return;
+    }
+
     const cart = getCart();
     const existing = cart.find(item => item.productId === product.id);
     const next = existing
-      ? cart.map(item => item.productId === product.id ? { ...item, quantity: item.quantity + 1 } : item)
-      : [...cart, { productId: product.id, name: product.name, unitPrice: product.priceCents, quantity: 1 }];
+      ? cart.map(item => item.productId === product.id ? { ...item, quantity: item.quantity + requested } : item)
+      : [...cart, { productId: product.id, name: product.name, unitPrice: product.priceCents, quantity: requested }];
     saveCart(next);
+    showNotification(`Added ${requested} ${product.unit} of ${product.name} to cart`);
   };
 
   return (
@@ -72,22 +90,37 @@ export default function Products() {
         </div>
 
         <div className="card-grid">
-          {list.map((p) => (
-            <article className="display-card" key={p.id}>
-              <div className="card-top">
-                <span className="pill">{p.category || 'OTHER'}</span>
-                <span className="pill muted">In stock</span>
-              </div>
-              <h3>{p.name}</h3>
-              <p>{p.description}</p>
-              <div className="meta-list">
-                <span>Farm: {p.farmer?.name || 'Local grower'}</span>
-                <span>₹{(p.priceCents / 100).toFixed(2)} / {p.unit}</span>
-                <span>{p.quantity} available</span>
-              </div>
-              <button type="button" onClick={() => addToCart(p)}>Add to cart</button>
-            </article>
-          ))}
+          {list.map((p) => {
+            const selectedQty = quantities[p.id] || 1;
+            return (
+              <article className="display-card" key={p.id}>
+                <div className="card-top">
+                  <span className="pill">{p.category || 'OTHER'}</span>
+                  <span className="pill muted">In stock</span>
+                </div>
+                <h3>{p.name}</h3>
+                <p>{p.description}</p>
+                <div className="meta-list">
+                  <span>Farm: {p.farmer?.name || 'Local grower'}</span>
+                  <span>₹{(p.priceCents / 100).toFixed(2)} / {p.unit}</span>
+                  <span>{p.quantity} available</span>
+                </div>
+                <div className="quantity-row">
+                  <label>
+                    Qty:
+                    <input
+                      type="number"
+                      min="1"
+                      max={p.quantity}
+                      value={selectedQty}
+                      onChange={e => setQuantity(p.id, e.target.value, p.quantity)}
+                    />
+                  </label>
+                  <button type="button" onClick={() => addToCart(p)}>Add to cart</button>
+                </div>
+              </article>
+            )
+          })}
         </div>
       </section>
     </main>

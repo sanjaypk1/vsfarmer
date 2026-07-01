@@ -1,6 +1,11 @@
 import { useState } from 'react'
 import Router from 'next/router'
 
+function showNotification(message, type = 'success') {
+  if (typeof window === 'undefined') return
+  window.dispatchEvent(new CustomEvent('appNotification', { detail: { message, type } }))
+}
+
 export default function AddProduct() {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
@@ -13,7 +18,7 @@ export default function AddProduct() {
     e.preventDefault()
     const token = localStorage.getItem('token')
     if (!token) {
-      alert('Login to add products')
+      showNotification('Login to add products', 'error')
       Router.push('/auth?mode=login')
       return
     }
@@ -24,8 +29,11 @@ export default function AddProduct() {
       body: JSON.stringify(payload)
     })
     const data = await res.json()
-    if (data.error) return alert(data.error)
-    alert('Product added')
+    if (data.error) {
+      showNotification(data.error, 'error')
+      return
+    }
+    showNotification('Product added', 'success')
     Router.push('/dashboard')
   }
 

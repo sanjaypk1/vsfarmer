@@ -59,10 +59,15 @@ export default function Dashboard() {
     })
     const updated = await res.json()
     if (updated.error) {
-      alert(updated.error)
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('appNotification', { detail: { message: updated.error, type: 'error' } }))
+      }
       return
     }
     setOrders((prev) => prev.map(order => order.id === updated.id ? updated : order))
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('appNotification', { detail: { message: 'Order updated', type: 'success' } }))
+    }
   }
 
   if (loading) return <main><p>Loading dashboard…</p></main>

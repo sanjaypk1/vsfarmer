@@ -16,11 +16,16 @@ export default function Checkout() {
     setCart(getCart());
   }, []);
 
+  const showNotification = (message, type = 'success') => {
+    if (typeof window === 'undefined') return;
+    window.dispatchEvent(new CustomEvent('appNotification', { detail: { message, type } }))
+  }
+
   const placeOrder = async () => {
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
     if (!token) {
-      alert('Please login first.');
-      Router.push('/login');
+      showNotification('Please login first.', 'error');
+      Router.push('/auth?mode=login');
       return;
     }
     setStatus('Placing order...');
@@ -36,10 +41,12 @@ export default function Checkout() {
     const data = await res.json();
     if (data.error) {
       setStatus('Order failed: ' + data.error);
+      showNotification(data.error, 'error');
     } else {
       localStorage.removeItem('farmers-market-cart');
       setCart([]);
       setStatus('Order placed successfully! Order ID: ' + data.id);
+      showNotification('Order placed successfully', 'success');
     }
   };
 

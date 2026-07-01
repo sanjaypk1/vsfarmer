@@ -10,3 +10,7 @@ npm-debug.log*
 pnpm-lock.yaml
 yarn.lock
 package-lock.json
+
+# Local Prisma databases
+/backend/prisma/*.db
+/backend/prisma/*.db-journal

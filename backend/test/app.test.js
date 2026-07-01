@@ -14,8 +14,8 @@ beforeAll(async () => {
 
   const password = await bcrypt.hash('password', 10);
   const farmerUser = await prisma.user.create({ data: { email: 'farm@test.com', password, role: 'FARMER' } });
-  farmerModel = await prisma.farmer.create({ data: { userId: farmerUser.id, name: 'Test Farm' } });
-  await prisma.product.create({ data: { farmerId: farmerModel.id, name: 'Test Tomato', priceCents: 250, quantity: 40, unit: 'kg' } });
+  farmerModel = await prisma.farmer.create({ data: { userId: farmerUser.id, name: 'Test Farm', sellingCategories: 'SEEDS,FERTILIZERS' } });
+  await prisma.product.create({ data: { farmerId: farmerModel.id, name: 'Test Tomato', priceCents: 250, quantity: 40, unit: 'kg', category: 'SEEDS' } });
 });
 
 afterAll(async () => {
@@ -38,5 +38,12 @@ describe('Backend API', () => {
     const login = await request(app).post('/api/auth/login').send({ email: 'testuser@example.com', password: 'password' });
     expect(login.statusCode).toBe(200);
     expect(login.body).toHaveProperty('token');
+  });
+
+  it('returns category information for products and farmers', async () => {
+    const res = await request(app).get('/api/products');
+    expect(res.statusCode).toBe(200);
+    const firstProduct = res.body.find(item => item.name === 'Test Tomato');
+    expect(firstProduct.category).toBe('SEEDS');
   });
 });

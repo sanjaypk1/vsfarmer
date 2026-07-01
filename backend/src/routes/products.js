@@ -4,7 +4,7 @@ const prisma = require('../prisma');
 const authenticate = require('../middleware/auth');
 
 router.get('/', async (req, res) => {
-  const { search, farmerId } = req.query;
+  const { search, farmerId, category } = req.query;
   const filters = {};
   if (search) {
     filters.OR = [
@@ -15,6 +15,9 @@ router.get('/', async (req, res) => {
   if (farmerId) {
     filters.farmerId = Number(farmerId);
   }
+  if (category) {
+    filters.category = category;
+  }
   const products = await prisma.product.findMany({ where: filters, include: { farmer: true }, take: 200 });
   res.json(products.map(p => ({
     id: p.id,
@@ -23,6 +26,7 @@ router.get('/', async (req, res) => {
     priceCents: p.priceCents,
     quantity: p.quantity,
     unit: p.unit,
+    category: p.category,
     farmer: { id: p.farmer.id, name: p.farmer.name },
     harvestDate: p.harvestDate,
     images: p.images ? p.images.split(',') : []
@@ -31,7 +35,7 @@ router.get('/', async (req, res) => {
 
 router.post('/', authenticate, async (req, res) => {
   if (req.user.role !== 'FARMER') return res.status(403).json({ error: 'Only farmers may add products' });
-  const { name, description, priceCents, quantity, unit, images, harvestDate } = req.body;
+  const { name, description, priceCents, quantity, unit, category, images, harvestDate } = req.body;
   if (!name || !priceCents) return res.status(400).json({ error: 'Missing required fields' });
   const product = await prisma.product.create({ data: {
     farmerId: req.user.farmer.id,
@@ -40,6 +44,7 @@ router.post('/', authenticate, async (req, res) => {
     priceCents,
     quantity: quantity || 0,
     unit: unit || 'unit',
+    category: category || 'OTHER',
     images: images ? images.join(',') : null,
     harvestDate: harvestDate ? new Date(harvestDate) : null
   } });
@@ -53,13 +58,14 @@ router.put('/:id', authenticate, async (req, res) => {
   if (req.user.role !== 'FARMER' || req.user.farmer?.id !== existing.farmerId) {
     return res.status(403).json({ error: 'Unauthorized' });
   }
-  const { name, description, priceCents, quantity, unit, images, harvestDate } = req.body;
+  const { name, description, priceCents, quantity, unit, category, images, harvestDate } = req.body;
   const product = await prisma.product.update({ where: { id: productId }, data: {
     name,
     description,
     priceCents,
     quantity,
     unit,
+    category: category || existing.category,
     images: images ? images.join(',') : existing.images,
     harvestDate: harvestDate ? new Date(harvestDate) : existing.harvestDate
   } });

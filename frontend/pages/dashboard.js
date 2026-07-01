@@ -9,7 +9,12 @@ function getToken() {
 export default function Dashboard() {
   const [user, setUser] = useState(null)
   const [orders, setOrders] = useState([])
+  const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
+
+  const totalProducts = products.length
+  const openOrders = orders.filter(order => order.status !== 'FULFILLED' && order.status !== 'CANCELLED').length
+  const totalRevenue = orders.reduce((sum, order) => sum + (order.totalCents || 0), 0)
 
   useEffect(() => {
     const token = getToken()
@@ -24,10 +29,19 @@ export default function Dashboard() {
           throw new Error(data.error)
         }
         setUser(data)
-        return fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/api/orders', { headers: { Authorization: `Bearer ${token}` } })
+        if (data.role === 'FARMER') {
+          return Promise.all([
+            fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/api/orders', { headers: { Authorization: `Bearer ${token}` } }),
+            fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/api/products?farmerId=' + data.farmer?.id, { headers: { Authorization: `Bearer ${token}` } })
+          ])
+        }
+        return [fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/api/orders', { headers: { Authorization: `Bearer ${token}` } })]
       })
-      .then(r => r.json())
-      .then(data => setOrders(data || []))
+      .then(([ordersRes, productsRes]) => Promise.all([ordersRes.json(), productsRes ? productsRes.json() : Promise.resolve([])]))
+      .then(([ordersData, productsData]) => {
+        setOrders(ordersData || [])
+        setProducts(productsData || [])
+      })
       .catch(() => {
         setUser(null)
         setOrders([])
@@ -62,17 +76,82 @@ export default function Dashboard() {
 
   return (
     <main>
-      <h2>Dashboard</h2>
-      <p>Welcome back, {user.email}! Role: {user.role}</p>
-      {user.role === 'FARMER' && (
-        <section style={{ marginTop: 20 }}>
-          <h3>Your farm</h3>
-          <p>Name: {user.farmer?.name}</p>
-          <p>Location: {user.farmer?.location || 'Not set'}</p>
-          <p>{user.farmer?.bio || 'No bio yet.'}</p>
-          <p><Link href="/add-product">Add new product</Link></p>
-        </section>
-      )}
+      <section className="page-card">
+        <div className="dashboard-hero">
+          <div>
+            <p className="eyebrow">Dashboard</p>
+            <h2>Welcome back, {user.email}</h2>
+            <p className="section-copy">Manage your store, products, and orders from one simple seller workspace.</p>
+          </div>
+          <div className="hero-actions">
+            <Link href="/add-product" className="btn btn-primary">Add product</Link>
+            <Link href="/products" className="btn btn-secondary">Browse marketplace</Link>
+          </div>
+        </div>
+
+        <div className="metrics-grid">
+          <article className="stats-card">
+            <p className="eyebrow">Products</p>
+            <h3>{totalProducts}</h3>
+            <p>{user.role === 'FARMER' ? 'Your active store items' : 'Items you are tracking'}</p>
+          </article>
+          <article className="stats-card">
+            <p className="eyebrow">Orders</p>
+            <h3>{orders.length}</h3>
+            <p>{openOrders} open orders</p>
+          </article>
+          <article className="stats-card">
+            <p className="eyebrow">Revenue</p>
+            <h3>₹{(totalRevenue / 100).toFixed(2)}</h3>
+            <p>Total sales captured</p>
+          </article>
+        </div>
+
+        {user.role === 'FARMER' && (
+          <section className="seller-summary">
+            <div className="seller-banner">
+              <div>
+                <p className="eyebrow">Your store</p>
+                <h3>{user.farmer?.name}</h3>
+                <p>{user.farmer?.bio || 'Share your farm story and products to attract buyers.'}</p>
+              </div>
+              <div className="seller-card-details">
+                <div>
+                  <strong>Location</strong>
+                  <p>{user.farmer?.location || 'Not set'}</p>
+                </div>
+                <div>
+                  <strong>Categories</strong>
+                  <p>{user.farmer?.sellingCategories ? user.farmer.sellingCategories.split(',').join(', ') : 'Not set'}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="store-products">
+              <h4>Store products</h4>
+              {products.length ? (
+                <div className="card-grid">
+                  {products.map(product => (
+                    <article className="display-card" key={product.id}>
+                      <div className="card-top">
+                        <span className="pill">{product.category}</span>
+                      </div>
+                      <h4>{product.name}</h4>
+                      <p>{product.description || 'No description yet.'}</p>
+                      <div className="meta-list">
+                        <span>₹{(product.priceCents / 100).toFixed(2)} / {product.unit}</span>
+                        <span>{product.quantity} available</span>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <p>You have no products yet. Add your first product to start selling.</p>
+              )}
+            </div>
+          </section>
+        )}
+      </section>
       <section style={{ marginTop: 20 }}>
         <h3>Your orders</h3>
         {!orders.length ? <p>No orders found.</p> : (

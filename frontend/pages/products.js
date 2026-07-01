@@ -13,10 +13,13 @@ function saveCart(cart) {
 export default function Products() {
   const [list, setList] = useState([]);
   const [search, setSearch] = useState('');
+  const [category, setCategory] = useState('ALL');
 
   const fetchProducts = () => {
-    const query = search ? `?search=${encodeURIComponent(search)}` : '';
-    fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/api/products' + query)
+    const query = new URLSearchParams();
+    if (search) query.set('search', search);
+    if (category && category !== 'ALL') query.set('category', category);
+    fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000') + '/api/products?' + query.toString())
       .then(r => r.json())
       .then(setList);
   };
@@ -48,6 +51,14 @@ export default function Products() {
 
         <div className="search-row">
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search produce" />
+          <select value={category} onChange={e => setCategory(e.target.value)}>
+            <option value="ALL">All categories</option>
+            <option value="SEEDS">Seeds</option>
+            <option value="PESTICIDES">Pesticides</option>
+            <option value="FERTILIZERS">Fertilizers</option>
+            <option value="TOOLS">Tools</option>
+            <option value="OTHER">Other</option>
+          </select>
           <button type="button" onClick={fetchProducts}>Search</button>
         </div>
 
@@ -55,7 +66,7 @@ export default function Products() {
           {list.map((p) => (
             <article className="display-card" key={p.id}>
               <div className="card-top">
-                <span className="pill">{p.unit}</span>
+                <span className="pill">{p.category || 'OTHER'}</span>
                 <span className="pill muted">In stock</span>
               </div>
               <h3>{p.name}</h3>

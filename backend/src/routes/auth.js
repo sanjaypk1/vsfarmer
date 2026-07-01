@@ -7,13 +7,13 @@ const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET || 'devsecret';
 
 router.post('/register', async (req, res) => {
-  const { email, password, role, name, location, bio } = req.body;
+  const { email, password, role, name, location, bio, sellingCategories } = req.body;
   if (!email || !password) return res.status(400).json({ error: 'Missing credentials' });
   try {
     const hashed = await bcrypt.hash(password, 10);
     const user = await prisma.user.create({ data: { email, password: hashed, role: role || 'CUSTOMER' } });
     if (role === 'FARMER') {
-      await prisma.farmer.create({ data: { userId: user.id, name: name || 'My Farm', location, bio } });
+      await prisma.farmer.create({ data: { userId: user.id, name: name || 'My Farm', location, bio, sellingCategories: Array.isArray(sellingCategories) ? sellingCategories.join(',') : sellingCategories } });
     }
     const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '7d' });
     res.json({ token });

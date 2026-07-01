@@ -18,13 +18,14 @@ model User {
 }
 
 model Farmer {
-  id        Int      @id @default(autoincrement())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int      @unique
-  name      String
-  location  String?
-  bio       String?
-  products  Product[]
+  id                 Int      @id @default(autoincrement())
+  user               User     @relation(fields: [userId], references: [id])
+  userId             Int      @unique
+  name               String
+  location           String?
+  bio                String?
+  sellingCategories  String?
+  products           Product[]
 }
 
 model Product {
@@ -36,6 +37,7 @@ model Product {
   priceCents  Int
   quantity    Int
   unit        String
+  category    String   @default("OTHER")
   images      String?
   harvestDate DateTime?
   orderItems  OrderItem[]

@@ -8,12 +8,19 @@ export default function Register(){
   const [name,setName]=useState('')
   const [location,setLocation]=useState('')
   const [bio,setBio]=useState('')
+  const [selectedCategories,setSelectedCategories]=useState([])
+  const toggleCategory = (category) => {
+    setSelectedCategories(prev => prev.includes(category) ? prev.filter(item => item !== category) : [...prev, category])
+  }
   const handle = async e => {
     e.preventDefault();
     const payload = { email, password, role };
-    if (role === 'FARMER') payload.name = name;
-    if (role === 'FARMER') payload.location = location;
-    if (role === 'FARMER') payload.bio = bio;
+    if (role === 'FARMER') {
+      payload.name = name;
+      payload.location = location;
+      payload.bio = bio;
+      payload.sellingCategories = selectedCategories;
+    }
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/auth/register`, { method: 'POST', headers: { 'content-type':'application/json' }, body: JSON.stringify(payload) });
     const j = await res.json();
     if (j.token) { localStorage.setItem('token', j.token); Router.push('/products'); }
@@ -39,6 +46,14 @@ export default function Register(){
               <input placeholder="Farm name" value={name} onChange={e=>setName(e.target.value)} />
               <input placeholder="Location" value={location} onChange={e=>setLocation(e.target.value)} />
               <textarea placeholder="Short farm bio" value={bio} onChange={e=>setBio(e.target.value)} rows={3} />
+              <div>
+                <p className="eyebrow">What do you sell?</p>
+                <div className="radio-group">
+                  {['SEEDS','PESTICIDES','FERTILIZERS','TOOLS','OTHER'].map(category => (
+                    <label key={category}><input type="checkbox" checked={selectedCategories.includes(category)} onChange={() => toggleCategory(category)} /> {category}</label>
+                  ))}
+                </div>
+              </div>
             </>
           )}
           <button type="submit">Register</button>
